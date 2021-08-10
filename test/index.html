@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Red fox</title>
+   <meta charset="utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css" />
+   <script src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"></script>
+</head>
+<body>
+<div id="map" style="height:400vh;width:300vw"></div>
+<script>
+//make a base layer 
+   var minimal = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png', {
+                        maxZoom: 20,
+                        attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+                    })
+//make an occurrence layer for macropus
+   var macropus = L.tileLayer.wms(
+       "https://records-ws.nbnatlas.org/ogc/wms/reflect", {  
+       //"https://records-ws.nbnatlas.org/mapping/wms/reflect", {
+         q : "lsid:NHMSYS0000458716",
+         layers: 'ALA:occurrences',
+         // format: 'image/png',
+         // transparent: true,
+         // bgcolor:"0x000000",
+         // version: '1.1.1',
+         // OUTLINE: false,
+         // fq: 'kingdom:Fungi',
+         ENV: "color:FF0003;name:circle;size:4;opacity:1"
+   });
+
+   var unconfirmed = L.tileLayer.wms(
+       "https://records-ws.nbnatlas.org/ogc/wms/reflect", {  
+       //"https://records-ws.nbnatlas.org/mapping/wms/reflect", {
+         q : "lsid:NHMSYS0000458716",
+         fq: 'kingdom:Fungi',
+         layers: 'ALA:occurrences',
+         format: 'image/png',
+         transparent: true,
+         bgcolor:"0x000000",
+         version: '1.1.1',
+         OUTLINE: false,
+         ENV: "color:000000;name:circle;size:4;opacity:1;"
+   });
+//make a map and add the layers
+   var map = L.map('map', {
+      center: [56.6,-4.0],
+      zoom: 6,
+      layers: [minimal, macropus, unconfirmed]
+   });
+
+   map.on('click', function(e){
+   var coord = e.latlng;
+   var lat = coord.lat;
+   var lng = coord.lng;
+   console.log("You clicked the map at latitude: " + lat + " and longitude: " + lng);
+  });
+</script>
+</body>
+</html>
