@@ -1,11 +1,19 @@
 <template>
-  <div>
-      <div id="map" style="height: 500px;"></div>
-  </div>
+    <div  class="map__wrapper">
+        <div id="map" style="height: 500px;"></div>
+        <div v-if="isPopup && clickedOccurrances.length > 0" class="popup__wrapper">
+            <div class="popup">
+                <div>{{ clickedOccurrances[0].basisOfRecord }} </div>
+                <div>{{ getDate(clickedOccurrances[0].eventDate)}}</div>
+                <div>{{ clickedOccurrances[0].collector }}</div>
+                <div>{{ clickedOccurrances[0].identificationVerificationStatus}}</div>
+                <button @click="closePopup">Close</button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
-
 
 import { mapGetters } from "vuex"
 
@@ -15,6 +23,8 @@ export default ({
   name: 'Map',
   data() {
       return {
+            isPopup: false,
+            search: 'lsid:NHMSYS0000458716',
             bounds: [-7.57216793459, 49.959999905, 1.68153079591, 58.6350001085],
             zoom: 6,
             params: {
@@ -36,12 +46,14 @@ export default ({
   },
   computed: {
      ...mapGetters([
-      'location'
+      'location',
+      'filters',
+      'clickedOccurrances'
     ]),
     size() {
         let value
         if (this.zoom < 8) {
-            value = 4
+            value = 10
         } else {
             value = 10
         }
@@ -51,6 +63,11 @@ export default ({
    watch: {
        location() {
             this.update()
+       },
+       filters(newVal, oldVal) {
+           if (newVal !== oldVal) {
+            this.updateFilters()
+           }
        }
    },
    methods: {
@@ -68,6 +85,33 @@ export default ({
                 this.setZoom()
             });
 
+            this.map.on('click', (e) => {
+                if (this.map.getZoom() > 10) {
+                    this.getRecords(e.latlng.lat, e.latlng.lng)
+                }
+            });
+
+       },
+
+       closePopup() {
+           this.isPopup = false
+           this.$store.commit('clickedOccurrances', [])
+       },
+
+       getDate(ms) {
+            var d = new Date(ms)
+            return d.toLocaleDateString()
+       },
+
+       getRecords(lat, lng) {
+            const api = `https://records-ws.nbnatlas.org/occurrences/search?q=${this.search}&pageSize=100&lon=${lng}&lat=${lat}&radius=0.25`
+            this.$http.get(api).then((response) => {
+                console.log(response.data.occurrences)
+                this.$store.commit('clickedOccurrances', response.data.occurrences)
+                if (response.data.occurrences.length > 0) {
+                    this.isPopup = true
+                }
+            })
        },
 
        baseLayer() {
@@ -90,11 +134,27 @@ export default ({
        addLayers() {
             this.layersParams.forEach((layer) => {
                 L.tileLayer.wms(
-                    "https://records-ws.nbnatlas.org/mapping/wms/reflect?q=lsid:NHMSYS0000458716" + layer.filter, {
+                    `https://records-ws.nbnatlas.org/mapping/wms/reflect?q=${this.search}${layer.filter}`, {
                         OUTLINE: false,
+                        id: layer.id,
                         type: 'markers',
                         ENV: `name:circle;color:${layer.color};size:${this.size};opacity:${this.params.opacity};`,
                 }).addTo(this.map)
+            })
+       },
+
+       addLayer() {
+           this.layersParams.forEach((layer) => {
+               console.log(this.filters, layer.id)
+               if (layer.id === this.filters) {
+                    L.tileLayer.wms(
+                        `https://records-ws.nbnatlas.org/mapping/wms/reflect?q=${this.search}${layer.filter}`, {
+                            OUTLINE: false,
+                            id: layer.id,
+                            type: 'markers',
+                            ENV: `name:circle;color:${layer.color};size:${this.size};opacity:${this.params.opacity};`,
+                    }).addTo(this.map)
+               }
             })
        },
 
@@ -121,6 +181,31 @@ export default ({
            const lat = this.location.latitude
            const lng = this.location.longitude
            this.map.setView([lat, lng], 15)
+       },
+
+       updateFilters() {
+            // this.removeLayers()console.log(this.map)
+            if (this.filters === 'all') {
+                this.removeLayers()
+                this.updateLayers()
+            } else {
+
+                const isExist = []
+
+                this.map.eachLayer((layer) => {
+                    if (layer.options.type) {
+                        if (layer.options.id !== this.filters) {
+                            this.map.removeLayer(layer)
+                        } else {
+                            isExist.push(layer)
+                        }
+                    }
+                })
+
+                if (isExist.length === 0) {
+                    this.addLayer()   
+                }
+            }
        }
    },
    mounted() {

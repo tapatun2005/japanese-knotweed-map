@@ -51,7 +51,6 @@ export default {
             })
         },
         searchList() {
-            console.log('loading')
             const api = `https://records-ws.nbnatlas.org/occurrences/search?q=${this.search}&pageSize=${this.pageSize}&lon=${this.location.longitude}&lat=${this.location.latitude}&radius=${this.radius}`
             this.$http.get(api).then((response) => {
                 console.log(response.data.occurrences)

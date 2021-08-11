@@ -6,7 +6,9 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     location: null,
-    occurrences: null
+    occurrences: null,
+    filters: 'all',
+    clickedOccurrances: []
   },
   getters: {
       location(state) {
@@ -14,7 +16,13 @@ const store = new Vuex.Store({
       },
       occurrences(state) {
         return state.occurrences
-    }
+      },
+      clickedOccurrances(state) {
+        return state.clickedOccurrances
+      },
+      filters(state) {
+        return state.filters
+      },
   },
   mutations: {
     location(state, data) {
@@ -22,6 +30,12 @@ const store = new Vuex.Store({
     },
     occurrences(state, data) {
         state.occurrences = data
+    },
+    filters(state, data) {
+      state.filters = data
+    },
+    clickedOccurrances(state, data) {
+      state.clickedOccurrances = data
     }
   }
 })
