@@ -96,7 +96,7 @@ export default ({
 
             this.map.fitBounds(L.latLngBounds(L.latLng(49.959999905, -7.57216793459), L.latLng(58.6350001085, 1.68153079591)))
             
-            this.setZoom()
+            // this.setZoom()
             this.baseLayer()
             this.addLayers()
 
