@@ -101,7 +101,7 @@ export default ({
             this.addLayers()
 
             this.map.on('zoomend', () => {
-                this.setZoom()
+                // this.setZoom()
             });
 
             this.map.on('click', (e) => {
