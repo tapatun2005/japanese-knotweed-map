@@ -1,11 +1,10 @@
 <template>
-    <div>
-        <form @submit="(e) =>  submit(e)">
-            <input type="text" v-model="postcode">
-            <input type="submit" value="Search">
+    <div class="app-map__search">
+        <form @submit="(e) => submit(e)">
+            <input type="text" v-model="postcode" placeholder="Postcode search" :class="{'is-error': errors.value}">
+            <input type="submit" value="Go">
         </form>
-        <div v-if="errors.value">{{ errors.message }}</div>
-        <div>{{ postcode }}</div>
+        <div class="app-map__search-error" v-if="errors.value">{{ errors.message }}</div>
     </div>
 </template>
 

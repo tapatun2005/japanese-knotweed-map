@@ -1,0 +1,41 @@
+.app-map__search {
+    position: relative;
+    form {
+        display: flex;
+    }
+    input[type="text"] {
+        padding: 10px;
+        background: white;
+        border: 1px solid $green;
+        font-size: 16px;
+        border-radius: 5px;
+        outline-color: lighten($green, 10);
+
+        &.is-error {
+            outline-color: lighten($red, 10);
+            border: 1px solid $red;
+        }
+    }
+
+    input[type="submit"] {
+        background: $green;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        margin-left: 5px;
+        padding: 0 10px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all .1s ease-in-out;
+        &:hover  {
+            background: lighten($green, 10);
+        }
+    }
+
+    &-error {
+        position: absolute;
+        top: 100%;
+        color: $red;
+        font-size: 12px;
+    }
+}

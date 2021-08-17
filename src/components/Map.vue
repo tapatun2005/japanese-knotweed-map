@@ -1,15 +1,39 @@
 <template>
-    <div  class="map__wrapper">
-        <div id="map" style="height: 500px;"></div>
-        <div v-if="isPopup && clickedOccurrances.length > 0" class="popup__wrapper">
-            <div class="popup">
-                <div>{{ clickedOccurrances[0].basisOfRecord }} </div>
-                <div>{{ getDate(clickedOccurrances[0].eventDate)}}</div>
-                <div>{{ clickedOccurrances[0].collector }}</div>
-                <div>{{ clickedOccurrances[0].identificationVerificationStatus}}</div>
-                <button @click="closePopup">Close</button>
+    <div  class="app-map__wrapper">
+        <div id="app-map-container"></div>
+        <div v-if="isPopup && clickedOccurrances.length > 0" class="app-map__popup__wrapper">
+            <div class="app-map__popup">
+                <div class="_content">
+                    <div class="_title">Knotweed Record</div>
+
+                    <div class="_item">
+                        <div>Date Recorded</div>
+                        <div>{{ getDate(clickedOccurrances[0]) }}</div>
+                    </div>
+
+                    <div class="_item">
+                        <div>Rights Holder</div>
+                        <div>{{ getHolder(clickedOccurrances[0].collector) }}</div>
+                    </div>
+
+                    <div class="_item">
+                        <div>Basis of Record</div>
+                        <div>{{ getBasisOfRecord(clickedOccurrances[0].basisOfRecord) }}</div>
+                    </div>
+
+                    <div class="_item">
+                        <div>Status</div>
+                         <div>{{ clickedOccurrances[0].identificationVerificationStatus}}</div>
+                    </div>
+
+                </div>
+                <div class="_button" @click="closePopup"></div>
             </div>
         </div>
+        <a href="#" class="app-map__link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 32"><path fill="#fff" d="M12.5 0A12.5 12.5 0 000 12.5c0 8.05 11 18.63 11.46 19.08a1.48 1.48 0 001 .42 1.48 1.48 0 001-.42c.47-.45 11.47-11 11.47-19.08A12.51 12.51 0 0012.5 0zm0 19.5a7 7 0 01-7-7 7 7 0 017-7 7 7 0 017 7 7 7 0 01-7 7z"/></svg>
+            <span>Submit a new record</span>
+        </a>
     </div>
 </template>
 
@@ -51,12 +75,7 @@ export default ({
       'clickedOccurrances'
     ]),
     size() {
-        let value
-        if (this.zoom < 8) {
-            value = 10
-        } else {
-            value = 10
-        }
+        let value = 4
         return value
     }
   },
@@ -73,7 +92,7 @@ export default ({
    methods: {
        init() { 
 
-            this.map = L.map('map')
+            this.map = L.map('app-map-container')
 
             this.map.fitBounds(L.latLngBounds(L.latLng(49.959999905, -7.57216793459), L.latLng(58.6350001085, 1.68153079591)))
             
@@ -86,9 +105,9 @@ export default ({
             });
 
             this.map.on('click', (e) => {
-                if (this.map.getZoom() > 10) {
+                // if (this.map.getZoom() > 10) {
                     this.getRecords(e.latlng.lat, e.latlng.lng)
-                }
+                // }
             });
 
        },
@@ -98,9 +117,29 @@ export default ({
            this.$store.commit('clickedOccurrances', [])
        },
 
-       getDate(ms) {
-            var d = new Date(ms)
+       getDate(el) {
+            let d; 
+            if (el.eventDate) {
+               d = new Date(el.eventDate) 
+            } else {
+                d = new Date(el.occurrenceYear) 
+            }
             return d.toLocaleDateString()
+       },
+
+       getHolder(name) {
+           
+           if (!name) {
+               name = 'Unknown'
+           }
+           return name
+       },
+
+       getBasisOfRecord(name) {
+           if (name === 'HumanObservation') {
+               name = 'Human Observation'
+           }
+           return name
        },
 
        getRecords(lat, lng) {
@@ -108,6 +147,7 @@ export default ({
             this.$http.get(api).then((response) => {
                 console.log(response.data.occurrences)
                 this.$store.commit('clickedOccurrances', response.data.occurrences)
+                console.log(response.data.occurrences[0])
                 if (response.data.occurrences.length > 0) {
                     this.isPopup = true
                 }

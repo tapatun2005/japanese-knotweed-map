@@ -1,0 +1,39 @@
+.app-map__legend {
+    @media (max-width: 768px) {
+        display: flex;
+        margin-top: 10px;
+    }
+    ._item {
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        @media (max-width: 768px) {
+            margin: 0 10px;
+        }
+
+        @media (max-width: 375px) {
+            margin: 0 5px;
+        }
+
+        span {
+            width: 10px;
+            height: 10px;
+            margin-right: 10px;
+            display: inline-block;
+            border-radius: 50%;
+
+            @media (max-width: 375px) {
+                margin-right: 5px;
+            }
+            
+
+            &.-green {
+                background: lighten($green, 20);
+            }
+
+            &.-red {
+                background: $red;
+            }
+        }
+    }
+}

@@ -1,0 +1,19 @@
+.app-map__dashboard {
+    background: $cream;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    color: $green;
+    .-right {
+        display: flex;
+        align-items: center;
+        @media (max-width: 580px) {
+            flex-direction: column;
+        }
+    }
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+}

@@ -14,4 +14,4 @@ Vue.use(VueAxios, axios)
 new Vue({
   render: h => h(App),
   store: store,
-}).$mount('#app')
+}).$mount('#app-map')

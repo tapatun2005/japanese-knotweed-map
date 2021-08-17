@@ -1,0 +1,9 @@
+.app-map {
+    background: $green;
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+    padding: 15px;
+    & > * {
+        box-sizing: border-box;
+    }
+}

@@ -8,12 +8,22 @@
     <title><%= htmlWebpackPlugin.options.title %></title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@0.7.7/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@0.7.7/dist/leaflet.js"></script>
+
+    <style>
+      .container {
+        width: 100%;
+        max-width: 768px;
+        margin: 0 auto;
+      }
+    </style>
   </head>
   <body>
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <div id="app"></div>
+    <div class="container">
+      <div id="app-map"></div>
+    </div> 
     <!-- built files will be auto injected -->
   </body>
 </html>

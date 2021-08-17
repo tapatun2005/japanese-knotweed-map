@@ -1,10 +1,10 @@
 <template>
-    <div class="filters">
-        <div>{{ filters }}</div>
-        <div>
-            <button v-for="(item, index) in list" :key="index" @click="setFilter(item)">
+    <div :class="{ 'app-map__filters': true, 'is-open': isOpen }">
+        <div class="_title" @click="toggle">{{ filters }} cases</div>
+        <div class="_dropdown">
+            <div v-for="(item, index) in list" :key="index" @click="setFilter(item)" class="_button">
                 {{ item }}
-            </button>
+            </div>
         </div>
     </div>
 </template>
@@ -23,6 +23,7 @@ export default {
                 'unconfirmed',
                 'accepted'
             ],
+            isOpen: false
         }
     },
     computed: {
@@ -35,6 +36,10 @@ export default {
         setFilter(name) {
             console.log(name)
             this.$store.commit('filters', name)
+            this.isOpen = false
+        },
+        toggle() {
+            this.isOpen = !this.isOpen
         }
     }
 }
