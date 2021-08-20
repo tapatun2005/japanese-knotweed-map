@@ -8,12 +8,19 @@
 
                     <div class="_item">
                         <div>Date Recorded</div>
-                        <div>{{ getDate(clickedOccurrances[0]) }}</div>
+                        <div>{{ getDateRecorded(clickedOccurrances[0]) }}</div>
                     </div>
+
+                    <div class="_item" v-if="clickedOccurrances[0].eventDateEnd">
+                        <div>Date Resolved</div>
+                        <div>{{ getDateResolved(clickedOccurrances[0]) }}</div>
+                    </div>
+
+
 
                     <div class="_item">
                         <div>Rights Holder</div>
-                        <div>{{ getHolder(clickedOccurrances[0].collector) }}</div>
+                        <div>{{ getHolder(clickedOccurrances[0]) }}</div>
                     </div>
 
                     <div class="_item">
@@ -21,10 +28,10 @@
                         <div>{{ getBasisOfRecord(clickedOccurrances[0].basisOfRecord) }}</div>
                     </div>
 
-                    <div class="_item">
+                    <!-- <div class="_item">
                         <div>Status</div>
                          <div>{{ clickedOccurrances[0].identificationVerificationStatus}}</div>
-                    </div>
+                    </div> -->
 
                 </div>
                 <div class="_button" @click="closePopup"></div>
@@ -56,14 +63,14 @@ export default ({
             },
             layersParams: [
                 {
-                    filter: '&qc=&&fq=occurrence_status:present&fq=identification_verification_status:(%22Unconfirmed%22%20OR%20%22Unconfirmed%20-%20plausible%22%20OR%20%22Unconfirmed%20-%20not%20reviewed%22)',
-                    color: 'fe2221',
-                    id: "unconfirmed"
+                    filter: `&qc=&&fq=occurrence_status:present&fq=occurrence_date_end_dt:[1900-01-01T00:00:00Z%20TO%20${new Date().toISOString()}]`,
+                    color: '3aba77',
+                    id: "resolved"
                 },
                 {
-                    filter: '&qc=&&fq=occurrence_status:present&fq=identification_verification_status:(%22Accepted%22%20OR%20%22Accepted%20-%20considered%20correct%22%20OR%20%22Accepted%20-%20correct%22%20OR%20%22verified%22)',
-                    color: '3aba77',
-                    id: "accepted"
+                    filter: `&qc=&&fq=occurrence_status:present&fq=-occurrence_date_end_dt:[1900-01-01T00:00:00Z%20TO%20${new Date().toISOString()}]`,
+                    color: 'fe2221',
+                    id: "live"
                 }
             ]
       }
@@ -117,7 +124,7 @@ export default ({
            this.$store.commit('clickedOccurrances', [])
        },
 
-       getDate(el) {
+       getDateRecorded(el) {
             let d; 
             if (el.eventDate) {
                d = new Date(el.eventDate) 
@@ -127,10 +134,17 @@ export default ({
             return d.toLocaleDateString()
        },
 
-       getHolder(name) {
-           
-           if (!name) {
-               name = 'Unknown'
+       getDateResolved(el) {
+            let d = new Date(el.eventDateEnd);
+            return d.toLocaleDateString()
+       },
+
+       getHolder(obj) {
+           let name = 'Not provided'
+           if (obj.collector) {
+               name = obj.collector
+           } else if (obj.dataProviderName) {
+               name = obj.dataProviderName
            }
            return name
        },
@@ -146,7 +160,19 @@ export default ({
             const api = `https://records-ws.nbnatlas.org/occurrences/search?q=${this.search}&pageSize=100&lon=${lng}&lat=${lat}&radius=0.25`
             this.$http.get(api).then((response) => {
                 console.log(response.data.occurrences)
-                this.$store.commit('clickedOccurrances', response.data.occurrences)
+                let arr = response.data.occurrences
+
+                console.log('no filters', arr)
+
+                if (this.filters === 'resolved') {
+                    arr = arr.filter((x) => x.eventDateEnd !== undefined)
+                } else if (this.filters === 'live'){
+                    arr = arr.filter((x) => x.eventDateEnd === undefined)
+                }
+
+                console.log('filtered', arr)
+
+                this.$store.commit('clickedOccurrances', arr)
                 console.log(response.data.occurrences[0])
                 if (response.data.occurrences.length > 0) {
                     this.isPopup = true

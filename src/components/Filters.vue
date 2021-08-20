@@ -20,8 +20,8 @@ export default {
         return {
             list: [
                 'all',
-                'unconfirmed',
-                'accepted'
+                'resolved',
+                'live'
             ],
             isOpen: false
         }

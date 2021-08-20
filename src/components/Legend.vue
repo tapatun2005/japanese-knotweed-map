@@ -1,10 +1,10 @@
 <template>
     <div class="app-map__legend">
         <div class="_item">
-            <span class="-green"></span> Accepted cases
+            <span class="-green"></span> Resolved cases
         </div>
         <div class="_item">
-            <span class="-red"></span> Unconfirmed cases
+            <span class="-red"></span> Live cases
         </div>
     </div>
 </template>
