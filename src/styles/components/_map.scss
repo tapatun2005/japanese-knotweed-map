@@ -29,6 +29,52 @@
     width: 90%;
     max-width: 320px;
 
+    &.-lg {
+        width: calc(100% - 50px);
+        max-height: calc(100% - 50px);
+        overflow-y: auto;
+        max-width: none;
+
+        @media(max-width:480px) {
+            width: calc(100% - 30px);
+            height: calc(100% - 30px);
+            max-height: none;
+        }
+    }
+
+    ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    p,
+    li {
+        a {
+            font-weight: 700;
+            color: $green;
+        }
+    }
+
+    li {
+        counter-increment: numberLi;
+        padding-left: 40px;
+        position: relative;
+        margin-bottom: 20px;
+        &:before {
+            content: counter(numberLi);
+            position: absolute;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: $green;
+            color: white;
+            text-align: center;
+            line-height: 24px;
+        }
+    }
+
     ._content {
         background: white;
         color: $green;
@@ -58,6 +104,7 @@
         text-align: center;
         border: none;
         color: white;
+        cursor: pointer;
         &:after {
             content: "+";
             position: relative;
@@ -79,6 +126,7 @@
     padding: 10px 20px;
     border-radius: 5px;
     display: block;
+    cursor: pointer;
     right: 10px;
     bottom: 20px;
     background-color: $green;

@@ -37,10 +37,25 @@
                 <div class="_button" @click="closePopup"></div>
             </div>
         </div>
-        <a href="#" class="app-map__link">
+        <div class="app-map__popup__wrapper" v-if="isInfo">
+            <div class="app-map__popup -lg">
+                <div class="_content">
+                    <div class="_title">Submit a record</div>
+                    <p>We would like to take this opportunity to encourage Fallopia Japonica (Japanese Knotweed) record submission. If you know of any cases in your local area, please follow these steps:</p>
+                    <ol>
+                        <li> Locate your Local Environmental Records Centre (LERC) using the <a href="https://www.alerc.org.uk/lerc-finder.html" target="_blank">ALERC Finder tool</a> .</li>
+                        <li>Submit your record to your local ecology organisation.</li>
+                        <li>If you are unable to locate your local organisation, please submit your record(s) via <a href="https://www.brc.ac.uk/irecord/" target="_blank">iRecord</a>  or <a href="https://uk.inaturalist.org/" target="_blank">iNaturalistUK</a> .</li>
+                    </ol>
+
+                </div>
+                <div class="_button" @click="toggleInfo"></div>
+            </div>
+        </div>
+        <div class="app-map__link" @click="toggleInfo">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 32"><path fill="#fff" d="M12.5 0A12.5 12.5 0 000 12.5c0 8.05 11 18.63 11.46 19.08a1.48 1.48 0 001 .42 1.48 1.48 0 001-.42c.47-.45 11.47-11 11.47-19.08A12.51 12.51 0 0012.5 0zm0 19.5a7 7 0 01-7-7 7 7 0 017-7 7 7 0 017 7 7 7 0 01-7 7z"/></svg>
             <span>Submit a new record</span>
-        </a>
+        </div>
     </div>
 </template>
 
@@ -55,6 +70,7 @@ export default ({
   data() {
       return {
             isPopup: false,
+            isInfo: false,
             search: 'lsid:NHMSYS0000458716',
             bounds: [-7.57216793459, 49.959999905, 1.68153079591, 58.6350001085],
             zoom: 6,
@@ -122,6 +138,10 @@ export default ({
        closePopup() {
            this.isPopup = false
            this.$store.commit('clickedOccurrances', [])
+       },
+
+       toggleInfo() {
+        this.isInfo = !this.isInfo  
        },
 
        getDateRecorded(el) {
