@@ -8,9 +8,16 @@
     .-right {
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
+        justify-content: space-around;
         @media (max-width: 580px) {
             flex-direction: column;
         }
+    }
+
+    @media (max-width: 1200px) {
+        justify-content: center;
+        flex-wrap: wrap;
     }
 
     @media (max-width: 768px) {

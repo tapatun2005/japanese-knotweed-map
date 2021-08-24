@@ -1,11 +1,7 @@
 .app-map__filters {
-    margin-left: 30px;
+    margin: 10px;
     position: relative;
-
-    @media (max-width: 580px) {
-        margin-left: 0;
-        margin-top: 10px;
-    }
+    
     ._title {
         background: $green;
         border-radius: 5px;

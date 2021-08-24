@@ -154,3 +154,8 @@
         background-color: lighten($green, 10);
     }
 }
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+    text-decoration: none !important;
+}
