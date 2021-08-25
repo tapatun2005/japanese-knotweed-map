@@ -90,6 +90,16 @@
                     font-weight: 700;
                 }
             }
+
+            ._loading {
+                margin-top: 3px;
+                width: 14px; 
+                height: 14px;
+                border-radius: 50%;
+                border: 3px solid rgba($green, .1);
+                border-right-color: white;
+                animation: loaderRightsHolder 1s ease-in-out;
+            }
         }
     }
 
@@ -158,4 +168,12 @@
 .leaflet-control-zoom-in,
 .leaflet-control-zoom-out {
     text-decoration: none !important;
+}
+
+@keyframes loaderRightsHolder {
+    from {
+        transform: rotate(0);
+    } to {
+        transform: rotate(360deg);
+    }
 }

@@ -16,11 +16,10 @@
                         <div>{{ getDateResolved(clickedOccurrances[0]) }}</div>
                     </div>
 
-
-
                     <div class="_item">
                         <div>Rights Holder</div>
-                        <div>{{ getHolder(clickedOccurrances[0]) }}</div>
+                        <div v-if="isRightHolderLoading" class="_loading"></div>
+                        <div v-else>{{ rightsHolder }}</div>
                     </div>
 
                     <div class="_item">
@@ -74,6 +73,8 @@ export default ({
             search: 'lsid:NHMSYS0000458716',
             bounds: [-7.57216793459, 49.959999905, 1.68153079591, 58.6350001085],
             zoom: 6,
+            isRightHolderLoading: false,
+            rightsHolder: null,
             params: {
                 opacity: 0.5
             },
@@ -193,10 +194,28 @@ export default ({
                 console.log('filtered', arr)
 
                 this.$store.commit('clickedOccurrances', arr)
-                console.log(response.data.occurrences[0])
                 if (response.data.occurrences.length > 0) {
+                    console.log(response.data.occurrences[0])
+                    this.getRecord(response.data.occurrences[0].uuid)
+                    this.isRightHolderLoading = true
                     this.isPopup = true
                 }
+            })
+       },
+
+       getRecord(uuid) {
+           const api = `https://records-ws.nbnatlas.org/occurrence/${uuid}`
+            this.$http.get(api).then((response) => {
+                console.log('response', response.data.raw.occurrence.rightsHolder)
+                const rightsHolder = response.data.raw.occurrence.rightsHolder
+                if (rightsHolder !== undefined) {
+                    this.rightsHolder = response.data.raw.occurrence.rightsHolder
+                } else {
+                    this.rightsHolder = this.clickedOccurrances[0].dataProviderName
+                }
+
+                this.isRightHolderLoading = false
+                
             })
        },
 
