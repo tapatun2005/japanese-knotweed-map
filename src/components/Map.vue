@@ -220,9 +220,11 @@ export default ({
        },
 
        baseLayer() {
-            L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png', {
-                attribution: ''
-            }).addTo(this.map) 
+            L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", {
+                    styleId: 22677,
+                    attribution: ""
+            }).addTo(this.map)
        },
 
        removeLayers() {
